@@ -328,19 +328,6 @@
   .option-row:has(input:disabled) { cursor: not-allowed; }
   .option-row:has(input:disabled:not(:checked)) { opacity: 0.45; }
 
-  .chip-row { padding: 0 12px 12px; }
-  .chip {
-    padding: 6px 12px;
-    border: 2px solid #d6d6d6;
-    border-radius: 16px;
-    background: #fff;
-    font: inherit;
-    font-size: 14px;
-    color: var(--text);
-    cursor: pointer;
-  }
-  .chip:hover { border-color: var(--border-strong); }
-  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   .review-table tr.group th {
     background: #fff;
@@ -532,96 +519,7 @@
 
   <hr class="divider">
 
-  <h2 class="section-title"><span class="section-num">2</span>Employee Details</h2>
-
-  <!-- Employee: code + name, or "not yet assigned" -->
-  <div class="field" data-field="employeeCode">
-    <div class="field-header">
-      <span class="field-label">Employee *</span>
-      <span class="field-help" id="employee-help">
-        <strong>Who will work this requirement?</strong>
-        <span id="employee-help-text">Enter the Employee Code and full name exactly as they appear on the employee record.</span>
-      </span>
-    </div>
-    <div id="employee-inputs">
-      <label class="sub-label" for="employee-code">Employee Code *</label>
-      <input class="control" type="text" id="employee-code" name="employeeCode" list="employee-list" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Digits only, e.g. 104523" aria-describedby="employee-help employeeCode-error">
-      <datalist id="employee-list"></datalist>
-      <p class="error-msg" id="employeeCode-error" hidden></p>
-      <div class="sub-control" data-field="employeeName">
-        <label class="sub-label" for="employee-name">Employee Name *</label>
-        <input class="control" type="text" id="employee-name" name="employeeName" placeholder="Full name" autocomplete="off" aria-describedby="employeeName-error">
-        <p class="error-msg" id="employeeName-error" hidden></p>
-      </div>
-    </div>
-    <label class="inline-check sub-control">
-      <input type="checkbox" id="employee-unassigned" name="employeeUnassigned">
-      <span>Employee not yet assigned <span class="choice-sub">(a new position still to be filled)</span></span>
-    </label>
-    <div class="notice info" id="unassigned-note" hidden>
-      <span class="notice-title">Employee to be confirmed</span>
-      <p>No Employee Code or name will be recorded. The shift times below are still required.</p>
-    </div>
-  </div>
-
-  <!-- Shift: start and end time -->
-  <div class="field" data-field="shift">
-    <div class="field-header">
-      <span class="field-label">Shift *</span>
-      <span class="field-help" id="shift-help">
-        <strong>When does the shift start and finish?</strong>
-        Select both times (24-hour clock). Overnight shifts that finish after midnight are allowed.
-      </span>
-    </div>
-    <div class="time-grid">
-      <div data-field="shiftStart">
-        <label class="sub-label" for="shift-start">Start time *</label>
-        <input class="control" type="time" id="shift-start" name="shiftStart" step="300" aria-describedby="shift-help shiftStart-error">
-        <p class="error-msg" id="shiftStart-error" hidden></p>
-      </div>
-      <div data-field="shiftEnd">
-        <label class="sub-label" for="shift-end">End time *</label>
-        <input class="control" type="time" id="shift-end" name="shiftEnd" step="300" aria-describedby="shift-help shift-readout shiftEnd-error">
-        <p class="error-msg" id="shiftEnd-error" hidden></p>
-      </div>
-    </div>
-    <p class="date-readout" id="shift-readout" aria-live="polite" hidden></p>
-    <div class="notice" id="overnight-warning" role="alert" hidden>
-      <span class="notice-title">Overnight shift</span>
-      <p id="overnight-text"></p>
-      <label class="confirm-check">
-        <input type="checkbox" id="overnight-confirm">
-        <span>Yes, this shift runs past midnight and finishes the next day.</span>
-      </label>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <h2 class="section-title"><span class="section-num">3</span>Requirement Details</h2>
-
-  <!-- Start date -->
-  <div class="field" data-field="startDate">
-    <label class="field-header" for="start-date">
-      <span class="field-label">Start date of Requirement *</span>
-      <span class="field-help" id="start-help">
-        <strong>When does this requirement actually begin?</strong>
-        Select the date the requirement starts. Do not enter the date the form was created.
-        For a change to an existing requirement (for example, an increase in hours), use the date the <em>change</em> takes effect, not the date the original requirement began.
-      </span>
-    </label>
-    <input class="control" type="date" id="start-date" name="startDate" aria-describedby="start-help start-readout start-warning startDate-error">
-    <p class="date-readout" id="start-readout" aria-live="polite" hidden></p>
-    <div class="notice" id="start-warning" role="alert" hidden>
-      <span class="notice-title">Check start date</span>
-      <p id="start-warning-text"></p>
-      <label class="confirm-check">
-        <input type="checkbox" id="start-confirm">
-        <span id="start-confirm-label">Yes, this is the date the requirement actually started.</span>
-      </label>
-    </div>
-    <p class="error-msg" id="startDate-error" hidden></p>
-  </div>
+  <h2 class="section-title"><span class="section-num">2</span>Requirement Details</h2>
 
   <!-- Duration: temporary / permanent -->
   <div class="field" data-field="duration">
@@ -653,6 +551,29 @@
       <p>This requirement will be recorded as <strong>Permanent</strong>, with no planned end date.</p>
     </div>
     <p class="error-msg" id="duration-error" hidden></p>
+  </div>
+
+  <!-- Start date -->
+  <div class="field" data-field="startDate">
+    <label class="field-header" for="start-date">
+      <span class="field-label">Start date of Requirement *</span>
+      <span class="field-help" id="start-help">
+        <strong>When does this requirement actually begin?</strong>
+        Select the date the requirement starts. Do not enter the date the form was created.
+        For a change to an existing requirement (for example, an increase in hours), use the date the <em>change</em> takes effect, not the date the original requirement began.
+      </span>
+    </label>
+    <input class="control" type="date" id="start-date" name="startDate" aria-describedby="start-help start-readout start-warning startDate-error">
+    <p class="date-readout" id="start-readout" aria-live="polite" hidden></p>
+    <div class="notice" id="start-warning" role="alert" hidden>
+      <span class="notice-title">Check start date</span>
+      <p id="start-warning-text"></p>
+      <label class="confirm-check">
+        <input type="checkbox" id="start-confirm">
+        <span id="start-confirm-label">Yes, this is the date the requirement actually started.</span>
+      </label>
+    </div>
+    <p class="error-msg" id="startDate-error" hidden></p>
   </div>
 
   <!-- End date: only shown for temporary requirements -->
@@ -749,6 +670,72 @@
 
   <hr class="divider">
 
+  <h2 class="section-title"><span class="section-num">3</span>Employee Details</h2>
+
+  <!-- Employee: code + name, or "not yet assigned" -->
+  <div class="field" data-field="employeeCode">
+    <div class="field-header">
+      <span class="field-label">Employee *</span>
+      <span class="field-help" id="employee-help">
+        <strong>Who will work this requirement?</strong>
+        <span id="employee-help-text">Enter the Employee Code and full name exactly as they appear on the employee record.</span>
+      </span>
+    </div>
+    <div id="employee-inputs">
+      <label class="sub-label" for="employee-code">Employee Code *</label>
+      <input class="control" type="text" id="employee-code" name="employeeCode" list="employee-list" inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Digits only, e.g. 104523" aria-describedby="employee-help employeeCode-error">
+      <datalist id="employee-list"></datalist>
+      <p class="error-msg" id="employeeCode-error" hidden></p>
+      <div class="sub-control" data-field="employeeName">
+        <label class="sub-label" for="employee-name">Employee Name *</label>
+        <input class="control" type="text" id="employee-name" name="employeeName" placeholder="Full name" autocomplete="off" aria-describedby="employeeName-error">
+        <p class="error-msg" id="employeeName-error" hidden></p>
+      </div>
+    </div>
+    <label class="inline-check sub-control">
+      <input type="checkbox" id="employee-unassigned" name="employeeUnassigned">
+      <span>Employee not yet assigned <span class="choice-sub">(a new position still to be filled)</span></span>
+    </label>
+    <div class="notice info" id="unassigned-note" hidden>
+      <span class="notice-title">Employee to be confirmed</span>
+      <p>No Employee Code or name will be recorded. The shift times below are still required.</p>
+    </div>
+  </div>
+
+  <!-- Shift: start and end time -->
+  <div class="field" data-field="shift">
+    <div class="field-header">
+      <span class="field-label">Shift *</span>
+      <span class="field-help" id="shift-help">
+        <strong>When does the shift start and finish?</strong>
+        Select both times (24-hour clock). Overnight shifts that finish after midnight are allowed.
+      </span>
+    </div>
+    <div class="time-grid">
+      <div data-field="shiftStart">
+        <label class="sub-label" for="shift-start">Start time *</label>
+        <input class="control" type="time" id="shift-start" name="shiftStart" step="300" aria-describedby="shift-help shiftStart-error">
+        <p class="error-msg" id="shiftStart-error" hidden></p>
+      </div>
+      <div data-field="shiftEnd">
+        <label class="sub-label" for="shift-end">End time *</label>
+        <input class="control" type="time" id="shift-end" name="shiftEnd" step="300" aria-describedby="shift-help shift-readout shiftEnd-error">
+        <p class="error-msg" id="shiftEnd-error" hidden></p>
+      </div>
+    </div>
+    <p class="date-readout" id="shift-readout" aria-live="polite" hidden></p>
+    <div class="notice" id="overnight-warning" role="alert" hidden>
+      <span class="notice-title">Overnight shift</span>
+      <p id="overnight-text"></p>
+      <label class="confirm-check">
+        <input type="checkbox" id="overnight-confirm">
+        <span>Yes, this shift runs past midnight and finishes the next day.</span>
+      </label>
+    </div>
+  </div>
+
+  <hr class="divider">
+
   <h2 class="section-title"><span class="section-num">4</span>Billing Information</h2>
 
   <div class="field" data-field="billingChange">
@@ -779,17 +766,19 @@
     <p class="error-msg" id="billingChange-error" hidden></p>
   </div>
 
-  <div class="field" data-field="requestingClient">
-    <label class="field-header" for="requesting-client">
+  <div class="field" data-field="requesterName">
+    <div class="field-header">
       <span class="field-label">Client requesting the change *</span>
-      <span class="field-help" id="requesting-help">Enter or select the client who requested this change.</span>
-    </label>
-    <input class="control" type="text" id="requesting-client" name="requestingClient" list="client-list" autocomplete="off" placeholder="Select or type client name" aria-describedby="requesting-help requestingClient-error">
-    <datalist id="client-list"></datalist>
-    <div class="chip-row">
-      <button type="button" class="chip" id="use-site-client"></button>
+      <span class="field-help" id="requesting-help">Enter the name and email of the client contact who requested this change.</span>
     </div>
-    <p class="error-msg" id="requestingClient-error" hidden></p>
+    <label class="sub-label" for="requester-name">Name *</label>
+    <input class="control" type="text" id="requester-name" name="requesterName" placeholder="Enter text..." autocomplete="off" aria-describedby="requesting-help requesterName-error">
+    <p class="error-msg" id="requesterName-error" hidden></p>
+    <div class="sub-control" data-field="requesterEmail">
+      <label class="sub-label" for="requester-email">Email *</label>
+      <input class="control" type="email" id="requester-email" name="requesterEmail" placeholder="e.g. name@company.com" autocomplete="off" inputmode="email" aria-describedby="requesterEmail-error">
+      <p class="error-msg" id="requesterEmail-error" hidden></p>
+    </div>
   </div>
 
   <div class="field" data-field="poNeeded">
@@ -868,9 +857,6 @@
   // Leave empty to type both by hand.
   const EMPLOYEES = []; // { code: '104523', name: 'Full Name' }
 
-  // Known clients for "Client requesting the change". Choosing a listed client stores its id.
-  const CLIENTS = []; // { id: 'C001', name: 'CBRE' }
-
   const form = document.getElementById('requirement-form');
   const $ = (id) => document.getElementById(id);
 
@@ -940,29 +926,7 @@
       if (phone.replace(/\D/g, '').length < 7) return 'This phone number looks too short. Enter the full number, including area code.';
       return '';
     },
-    employeeCode: () => {
-      if (unassigned()) return '';
-      const code = text('employee-code');
-      if (!code) return 'Employee Code is required. If nobody has been assigned yet, tick "Employee not yet assigned".';
-      if (!/^\d+$/.test(code)) return 'Employee Code uses digits only, e.g. 104523.';
-      if (EMPLOYEES.length && !findEmployee(code)) {
-        return 'No employee found with code ' + code + '. Check the code, or tick "Employee not yet assigned".';
-      }
-      return '';
-    },
-    employeeName: () => unassigned() || text('employee-name') ? '' : 'Employee Name is required.',
-    shiftStart: () => $('shift-start').value ? '' : 'Shift start time is required.',
-    shiftEnd: () => {
-      const start = toMinutes($('shift-start').value);
-      const end = toMinutes($('shift-end').value);
-      if (end === null) return 'Shift end time is required.';
-      if (start === null) return '';
-      if (end === start) return 'End time must be different from the start time.';
-      if (end < start && !$('overnight-confirm').checked) {
-        return 'End time is earlier than the start time. If the shift runs past midnight, tick the box below to confirm. Otherwise, correct the end time.';
-      }
-      return '';
-    },
+    duration: () => duration() ? '' : 'Select whether the requirement is temporary or permanent.',
     startDate: () => {
       if (!startInput.value) return 'Select the date the requirement starts.';
       const start = parseDate(startInput.value);
@@ -972,7 +936,6 @@
       }
       return '';
     },
-    duration: () => duration() ? '' : 'Select whether the requirement is temporary or permanent.',
     endDate: () => {
       if (duration() !== 'Temporary') return '';
       if (!endInput.value) return 'Select the date this temporary requirement finishes.';
@@ -996,13 +959,42 @@
       'Enter the number of training hours to be paid, e.g. 7.5.',
       'Enter the number of training hours as a positive number, e.g. 7.5.'),
     details: () => text('details') ? '' : 'Describe the requirement, for example duties and days worked.',
+    employeeCode: () => {
+      if (unassigned()) return '';
+      const code = text('employee-code');
+      if (!code) return 'Employee Code is required. If nobody has been assigned yet, tick "Employee not yet assigned".';
+      if (!/^\d+$/.test(code)) return 'Employee Code uses digits only, e.g. 104523.';
+      if (EMPLOYEES.length && !findEmployee(code)) {
+        return 'No employee found with code ' + code + '. Check the code, or tick "Employee not yet assigned".';
+      }
+      return '';
+    },
+    employeeName: () => unassigned() || text('employee-name') ? '' : 'Employee Name is required.',
+    shiftStart: () => $('shift-start').value ? '' : 'Shift start time is required.',
+    shiftEnd: () => {
+      const start = toMinutes($('shift-start').value);
+      const end = toMinutes($('shift-end').value);
+      if (end === null) return 'Shift end time is required.';
+      if (start === null) return '';
+      if (end === start) return 'End time must be different from the start time.';
+      if (end < start && !$('overnight-confirm').checked) {
+        return 'End time is earlier than the start time. If the shift runs past midnight, tick the box below to confirm. Otherwise, correct the end time.';
+      }
+      return '';
+    },
     billingChange: () => {
       // Until these are answered, the note in the card explains why; their own fields show the error
       if (!reqType()) return '';
       if (reqType() === TYPE_HOURS && !changeDirection()) return '';
       return radioValue('billingChange') ? '' : 'Please select whether this is an increase or decrease.';
     },
-    requestingClient: () => text('requesting-client') ? '' : 'Please select the client who requested this change.',
+    requesterName: () => text('requester-name') ? '' : 'Enter the name of the client contact who requested this change.',
+    requesterEmail: () => {
+      const email = text('requester-email');
+      if (!email) return 'Enter the email address of the client contact who requested this change.';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Enter a full email address, e.g. name@company.com.';
+      return '';
+    },
     poNeeded: () => radioValue('poNeeded') ? '' : 'Select whether a purchase order (PO) is needed.'
   };
 
@@ -1059,7 +1051,8 @@
     shiftStart: 'shift-start', shiftEnd: 'shift-end', startDate: 'start-date', endDate: 'end-date',
     requirementType: 'requirement-type', changeDirection: 'change-increase', hoursChange: 'hours-change',
     trainingHours: 'training-hours', details: 'details', contactName: 'contact-name',
-    contactPhone: 'contact-phone', billingChange: 'billing-increase', requestingClient: 'requesting-client',
+    contactPhone: 'contact-phone', billingChange: 'billing-increase', requesterName: 'requester-name',
+    requesterEmail: 'requester-email',
     poNeeded: 'po-yes'
   };
 
@@ -1362,30 +1355,6 @@
     radio.addEventListener('change', () => { touched.add('billingChange'); validate('billingChange'); });
   });
 
-  /* ---------- requesting client: suggestions + one-click "same as site client" ---------- */
-
-  function updateClients() {
-    const siteClient = text('client-name');
-    const names = CLIENTS.map((c) => c.name);
-    if (siteClient && !names.includes(siteClient)) names.push(siteClient);
-    const list = $('client-list');
-    list.textContent = '';
-    names.forEach((name) => {
-      const option = document.createElement('option');
-      option.value = name;
-      list.appendChild(option);
-    });
-    const chip = $('use-site-client');
-    chip.hidden = !siteClient;
-    chip.textContent = 'Same as site client: ' + siteClient;
-  }
-
-  $('use-site-client').addEventListener('click', () => {
-    $('requesting-client').value = text('client-name');
-    touched.add('requestingClient');
-    validate('requestingClient');
-  });
-
   /* ---------- PO: number only asked for when a PO is needed ---------- */
 
   function updatePo() {
@@ -1401,10 +1370,8 @@
   // Anything that can change a derived value re-runs the derived updates
   form.addEventListener('change', () => {
     updateBilling();
-    updateClients();
     if (touched.has('billingChange') || submitAttempted) validate('billingChange');
   });
-  $('client-name').addEventListener('input', updateClients);
 
   function refreshAll() {
     updateStart();
@@ -1415,14 +1382,14 @@
     updateEmployee();
     updateShift();
     updateBilling();
-    updateClients();
     updatePo();
   }
 
   /* ---------- generic fields: validate on blur, clear errors as soon as they're fixed ---------- */
 
   ['clientName', 'branch', 'division', 'siteAddress', 'contactName', 'contactPhone', 'employeeCode',
-   'employeeName', 'requirementType', 'hoursChange', 'trainingHours', 'details', 'requestingClient']
+   'employeeName', 'requirementType', 'hoursChange', 'trainingHours', 'details', 'requesterName',
+   'requesterEmail']
     .forEach((key) => {
       const input = $(focusTarget[key]);
       input.addEventListener('blur', () => { touched.add(key); validate(key); });
@@ -1480,11 +1447,7 @@
       })(),
       billing: {
         changeType: radioValue('billingChange'),
-        requestingClient: (() => {
-          const name = text('requesting-client');
-          const match = CLIENTS.find((c) => c.name === name);
-          return { name: name, id: match ? match.id : null };
-        })(),
+        requestedBy: { name: text('requester-name'), email: text('requester-email') },
         poRequired: radioValue('poNeeded') === 'Yes',
         poNumber: radioValue('poNeeded') === 'Yes' ? text('po-number') || null : null,
         note: text('billing-note')
@@ -1526,20 +1489,6 @@
       tbody.appendChild(tr);
     };
 
-    group('Employee');
-    if (data.employee.assigned) {
-      addRow(tbody, 'Employee Code', data.employee.code, { key: true });
-      addRow(tbody, 'Employee Name', data.employee.name, { key: true });
-    } else {
-      addRow(tbody, 'Employee', 'Not yet assigned', { key: true, tag: 'To be confirmed' });
-    }
-    addRow(tbody, 'Shift start time', data.shift.startTime, { key: true });
-    addRow(tbody, 'Shift end time', data.shift.endTime + (data.shift.overnight ? ' (next day)' : ''), {
-      key: true,
-      tag: data.shift.overnight ? 'Overnight: confirmed' : ''
-    });
-    addRow(tbody, 'Shift length', formatLength(data.shift.lengthMinutes));
-
     group('Requirement');
     const start = parseDate(data.startDate);
     addRow(tbody, 'Start Date', formatShort(start), {
@@ -1557,9 +1506,25 @@
     if (data.trainingHours !== null) addRow(tbody, 'Training Hours', plural(data.trainingHours, 'hr'), { key: true });
     addRow(tbody, 'Requirement details', data.details);
 
+
+    group('Employee');
+    if (data.employee.assigned) {
+      addRow(tbody, 'Employee Code', data.employee.code, { key: true });
+      addRow(tbody, 'Employee Name', data.employee.name, { key: true });
+    } else {
+      addRow(tbody, 'Employee', 'Not yet assigned', { key: true, tag: 'To be confirmed' });
+    }
+    addRow(tbody, 'Shift start time', data.shift.startTime, { key: true });
+    addRow(tbody, 'Shift end time', data.shift.endTime + (data.shift.overnight ? ' (next day)' : ''), {
+      key: true,
+      tag: data.shift.overnight ? 'Overnight: confirmed' : ''
+    });
+    addRow(tbody, 'Shift length', formatLength(data.shift.lengthMinutes));
+
     group('Billing');
     addRow(tbody, 'Increase / Decrease', data.billing.changeType, { key: true });
-    addRow(tbody, 'Client requesting the change', data.billing.requestingClient.name, { key: true });
+    addRow(tbody, 'Client requesting the change',
+      data.billing.requestedBy.name + ', ' + data.billing.requestedBy.email, { key: true });
     addRow(tbody, 'PO needed', data.billing.poRequired
       ? 'Yes' + (data.billing.poNumber ? ', PO number ' + data.billing.poNumber : ', PO number not received yet')
       : 'No');
