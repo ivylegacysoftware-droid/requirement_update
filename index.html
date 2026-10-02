@@ -336,6 +336,40 @@
     border-bottom-color: var(--label);
   }
 
+  .subsection-title {
+    margin: 18px 2px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Days of the week: toggle tiles */
+  .day-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 12px;
+  }
+  .day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 4px;
+    border: 2px solid #d6d6d6;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+  }
+  .day input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
+  .day:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .day:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
   /* Temporary / Permanent choice */
   .choice-group {
     display: grid;
@@ -439,6 +473,7 @@
   @media (max-width: 520px) {
     .choice-group { grid-template-columns: 1fr; }
     .time-grid { grid-template-columns: 1fr; }
+    .day-grid { grid-template-columns: repeat(4, 1fr); }
     .time-grid > div + div { border-left: 0; border-top: 2px solid var(--grey); }
     .actions .btn { flex: 1 1 100%; }
     .review-table th { width: 40%; }
@@ -520,6 +555,25 @@
   <hr class="divider">
 
   <h2 class="section-title"><span class="section-num">2</span>Requirement Details</h2>
+
+  <!-- Days of the week: one or more -->
+  <div class="field" data-field="daysOfWeek">
+    <div class="field-header" id="days-label">
+      <span class="field-label">Days of the Week *</span>
+      <span class="field-help" id="days-help"><strong>Select the days of the week this requirement applies to.</strong></span>
+    </div>
+    <div class="day-grid" role="group" aria-labelledby="days-label" aria-describedby="days-help days-readout daysOfWeek-error">
+      <label class="day"><input type="checkbox" id="day-monday" name="daysOfWeek" value="Monday"><span>Mon</span></label>
+      <label class="day"><input type="checkbox" name="daysOfWeek" value="Tuesday"><span>Tue</span></label>
+      <label class="day"><input type="checkbox" name="daysOfWeek" value="Wednesday"><span>Wed</span></label>
+      <label class="day"><input type="checkbox" name="daysOfWeek" value="Thursday"><span>Thu</span></label>
+      <label class="day"><input type="checkbox" name="daysOfWeek" value="Friday"><span>Fri</span></label>
+      <label class="day"><input type="checkbox" name="daysOfWeek" value="Saturday"><span>Sat</span></label>
+      <label class="day"><input type="checkbox" name="daysOfWeek" value="Sunday"><span>Sun</span></label>
+    </div>
+    <p class="date-readout" id="days-readout" aria-live="polite" hidden></p>
+    <p class="error-msg" id="daysOfWeek-error" hidden></p>
+  </div>
 
   <!-- Duration: temporary / permanent -->
   <div class="field" data-field="duration">
@@ -659,15 +713,6 @@
     </div>
   </div>
 
-  <div class="field" data-field="details">
-    <label class="field-header" for="details">
-      <span class="field-label">Outline all Requirement Details *</span>
-      <span class="field-hint red">1. Double check Requirement Dates&nbsp; 2. Confirm the shifts are not overlapping on TG.</span>
-    </label>
-    <textarea class="control" id="details" name="details" placeholder="Enter text..." aria-describedby="details-error"></textarea>
-    <p class="error-msg" id="details-error" hidden></p>
-  </div>
-
   <hr class="divider">
 
   <h2 class="section-title"><span class="section-num">3</span>Employee Details</h2>
@@ -710,6 +755,7 @@
         <strong>When does the shift start and finish?</strong>
         Select both times (24-hour clock). Overnight shifts that finish after midnight are allowed.
       </span>
+      <span class="field-hint red">Confirm the shifts are not overlapping on TG.</span>
     </div>
     <div class="time-grid">
       <div data-field="shiftStart">
@@ -802,12 +848,29 @@
     <p class="error-msg" id="poNeeded-error" hidden></p>
   </div>
 
-  <div class="field">
+  <div class="field" data-field="billingNote">
     <label class="field-header" for="billing-note">
-      <span class="field-label">Additional notes - For billing</span>
-      <span class="field-hint muted">Anything else billing needs to know. Increase/decrease, requesting client and PO are recorded above.</span>
+      <span class="field-label">Billing Note *</span>
+      <span class="field-help" id="billing-note-help">
+        <strong>Why is this change being made?</strong>
+        Explain the reason and anything billing needs to know. Increase/decrease, the requesting client and PO are recorded above.
+      </span>
     </label>
-    <textarea class="control" id="billing-note" name="billingNote" placeholder="Enter text..."></textarea>
+    <textarea class="control" id="billing-note" name="billingNote" placeholder="Enter text..." aria-describedby="billing-note-help billingNote-error"></textarea>
+    <p class="error-msg" id="billingNote-error" hidden></p>
+  </div>
+
+  <p class="subsection-title">Other information</p>
+
+  <div class="field">
+    <label class="field-header" for="additional-details">
+      <span class="field-label">Additional Details</span>
+      <span class="field-help" id="additional-help">
+        Add any additional information relevant to this requirement.
+        Employee, shift times, days, dates, increase/decrease and client already have their own fields above.
+      </span>
+    </label>
+    <textarea class="control" id="additional-details" name="additionalDetails" placeholder="Enter text..." aria-describedby="additional-help"></textarea>
   </div>
 
   <div class="actions">
@@ -926,6 +989,7 @@
       if (phone.replace(/\D/g, '').length < 7) return 'This phone number looks too short. Enter the full number, including area code.';
       return '';
     },
+    daysOfWeek: () => selectedDays().length ? '' : 'Please select at least one day of the week.',
     duration: () => duration() ? '' : 'Select whether the requirement is temporary or permanent.',
     startDate: () => {
       if (!startInput.value) return 'Select the date the requirement starts.';
@@ -958,7 +1022,6 @@
     trainingHours: () => reqType() !== TYPE_TRAINING ? '' : checkHours($('training-hours'),
       'Enter the number of training hours to be paid, e.g. 7.5.',
       'Enter the number of training hours as a positive number, e.g. 7.5.'),
-    details: () => text('details') ? '' : 'Describe the requirement, for example duties and days worked.',
     employeeCode: () => {
       if (unassigned()) return '';
       const code = text('employee-code');
@@ -995,8 +1058,27 @@
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Enter a full email address, e.g. name@company.com.';
       return '';
     },
-    poNeeded: () => radioValue('poNeeded') ? '' : 'Select whether a purchase order (PO) is needed.'
+    poNeeded: () => radioValue('poNeeded') ? '' : 'Select whether a purchase order (PO) is needed.',
+    billingNote: () => text('billing-note') ? '' : 'Enter a billing note explaining why this change is being made.'
   };
+
+  const selectedDays = () =>
+    Array.from(form.querySelectorAll('input[name="daysOfWeek"]:checked')).map((box) => box.value);
+
+  // ['Monday','Tuesday','Wednesday','Friday'] -> 'Monday to Wednesday, Friday'
+  function describeDays(days) {
+    const order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const idx = days.map((d) => order.indexOf(d)).sort((a, b) => a - b);
+    const parts = [];
+    for (let i = 0; i < idx.length; i++) {
+      let j = i;
+      while (j + 1 < idx.length && idx[j + 1] === idx[j] + 1) j++;
+      parts.push(j - i >= 2 ? order[idx[i]] + ' to ' + order[idx[j]]
+        : idx.slice(i, j + 1).map((n) => order[n]).join(', '));
+      i = j;
+    }
+    return parts.join(', ');
+  }
 
   function radioValue(name) {
     const checked = form.querySelector('input[name="' + name + '"]:checked');
@@ -1050,7 +1132,7 @@
     siteAddress: 'site-address', employeeCode: 'employee-code', employeeName: 'employee-name',
     shiftStart: 'shift-start', shiftEnd: 'shift-end', startDate: 'start-date', endDate: 'end-date',
     requirementType: 'requirement-type', changeDirection: 'change-increase', hoursChange: 'hours-change',
-    trainingHours: 'training-hours', details: 'details', contactName: 'contact-name',
+    trainingHours: 'training-hours', daysOfWeek: 'day-monday', billingNote: 'billing-note', contactName: 'contact-name',
     contactPhone: 'contact-phone', billingChange: 'billing-increase', requesterName: 'requester-name',
     requesterEmail: 'requester-email',
     poNeeded: 'po-yes'
@@ -1373,7 +1455,25 @@
     if (touched.has('billingChange') || submitAttempted) validate('billingChange');
   });
 
+  /* ---------- days of the week: readable summary of the selection ---------- */
+
+  function updateDays() {
+    const days = selectedDays();
+    const readout = $('days-readout');
+    readout.hidden = !days.length;
+    readout.textContent = describeDays(days);
+    const span = document.createElement('span');
+    span.className = 'extra';
+    span.textContent = ' · ' + plural(days.length, 'day') + ' a week';
+    readout.appendChild(span);
+  }
+
+  form.querySelectorAll('input[name="daysOfWeek"]').forEach((box) => {
+    box.addEventListener('change', () => { touched.add('daysOfWeek'); updateDays(); validate('daysOfWeek'); });
+  });
+
   function refreshAll() {
+    updateDays();
     updateStart();
     updateEndReadout();
     updateDuration();
@@ -1388,8 +1488,8 @@
   /* ---------- generic fields: validate on blur, clear errors as soon as they're fixed ---------- */
 
   ['clientName', 'branch', 'division', 'siteAddress', 'contactName', 'contactPhone', 'employeeCode',
-   'employeeName', 'requirementType', 'hoursChange', 'trainingHours', 'details', 'requesterName',
-   'requesterEmail']
+   'employeeName', 'requirementType', 'hoursChange', 'trainingHours', 'requesterName',
+   'requesterEmail', 'billingNote']
     .forEach((key) => {
       const input = $(focusTarget[key]);
       input.addEventListener('blur', () => { touched.add(key); validate(key); });
@@ -1436,7 +1536,8 @@
       typeOfChange: reqType() === TYPE_HOURS ? changeLabel() : null,
       hoursChange: reqType() === TYPE_HOURS ? Number($('hours-change').value) : null,
       trainingHours: reqType() === TYPE_TRAINING ? Number($('training-hours').value) : null,
-      details: text('details'),
+      daysOfWeek: selectedDays(),
+      additionalDetails: text('additional-details'),
       siteContact: { name: text('contact-name'), phone: text('contact-phone') },
       employee: unassigned()
         ? { assigned: false, code: null, name: null }
@@ -1490,6 +1591,7 @@
     };
 
     group('Requirement');
+    addRow(tbody, 'Days of the Week', describeDays(data.daysOfWeek) + ' (' + plural(data.daysOfWeek.length, 'day') + ')', { key: true });
     const start = parseDate(data.startDate);
     addRow(tbody, 'Start Date', formatShort(start), {
       key: true,
@@ -1504,8 +1606,6 @@
         plural(data.hoursChange, 'hr') + ' per week', { key: true });
     }
     if (data.trainingHours !== null) addRow(tbody, 'Training Hours', plural(data.trainingHours, 'hr'), { key: true });
-    addRow(tbody, 'Requirement details', data.details);
-
 
     group('Employee');
     if (data.employee.assigned) {
@@ -1528,7 +1628,8 @@
     addRow(tbody, 'PO needed', data.billing.poRequired
       ? 'Yes' + (data.billing.poNumber ? ', PO number ' + data.billing.poNumber : ', PO number not received yet')
       : 'No');
-    addRow(tbody, 'Billing note', data.billing.note || 'None');
+    addRow(tbody, 'Billing Note', data.billing.note, { key: true });
+    addRow(tbody, 'Additional Details', data.additionalDetails || 'None');
 
     group('Site');
     addRow(tbody, 'Site', data.siteName);
