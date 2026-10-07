@@ -336,39 +336,9 @@
     border-bottom-color: var(--label);
   }
 
-  .subsection-title {
-    margin: 18px 2px 8px;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
+  .sub-label .field-hint { font-weight: 400; }
 
-  /* Days of the week: toggle tiles */
-  .day-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    padding: 12px;
-  }
-  .day {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 4px;
-    border: 2px solid #d6d6d6;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-    cursor: pointer;
-    user-select: none;
-  }
-  .day input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
-  .day:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
-  .day:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .section-intro { margin: -4px 2px 10px; font-size: 15px; color: var(--text); }
 
   /* Temporary / Permanent choice */
   .choice-group {
@@ -473,7 +443,6 @@
   @media (max-width: 520px) {
     .choice-group { grid-template-columns: 1fr; }
     .time-grid { grid-template-columns: 1fr; }
-    .day-grid { grid-template-columns: repeat(4, 1fr); }
     .time-grid > div + div { border-left: 0; border-top: 2px solid var(--grey); }
     .actions .btn { flex: 1 1 100%; }
     .review-table th { width: 40%; }
@@ -555,25 +524,6 @@
   <hr class="divider">
 
   <h2 class="section-title"><span class="section-num">2</span>Requirement Details</h2>
-
-  <!-- Days of the week: one or more -->
-  <div class="field" data-field="daysOfWeek">
-    <div class="field-header" id="days-label">
-      <span class="field-label">Days of the Week *</span>
-      <span class="field-help" id="days-help"><strong>Select the days of the week this requirement applies to.</strong></span>
-    </div>
-    <div class="day-grid" role="group" aria-labelledby="days-label" aria-describedby="days-help days-readout daysOfWeek-error">
-      <label class="day"><input type="checkbox" id="day-monday" name="daysOfWeek" value="Monday"><span>Mon</span></label>
-      <label class="day"><input type="checkbox" name="daysOfWeek" value="Tuesday"><span>Tue</span></label>
-      <label class="day"><input type="checkbox" name="daysOfWeek" value="Wednesday"><span>Wed</span></label>
-      <label class="day"><input type="checkbox" name="daysOfWeek" value="Thursday"><span>Thu</span></label>
-      <label class="day"><input type="checkbox" name="daysOfWeek" value="Friday"><span>Fri</span></label>
-      <label class="day"><input type="checkbox" name="daysOfWeek" value="Saturday"><span>Sat</span></label>
-      <label class="day"><input type="checkbox" name="daysOfWeek" value="Sunday"><span>Sun</span></label>
-    </div>
-    <p class="date-readout" id="days-readout" aria-live="polite" hidden></p>
-    <p class="error-msg" id="daysOfWeek-error" hidden></p>
-  </div>
 
   <!-- Duration: temporary / permanent -->
   <div class="field" data-field="duration">
@@ -660,44 +610,6 @@
     <p class="error-msg" id="requirementType-error" hidden></p>
   </div>
 
-  <hr class="divider">
-
-  <!-- Only for "Hours Change" -->
-  <div id="hours-change-section" hidden>
-    <div class="field" data-field="changeDirection">
-      <div class="field-header" id="change-label">
-        <span class="field-label normal">Type of Change *</span>
-        <span class="field-help" id="change-help">
-          Temporary or permanent is taken from <strong>Requirement duration</strong> above<span id="change-duration-text"></span>.
-        </span>
-      </div>
-      <div class="option-list" role="radiogroup" aria-labelledby="change-label" aria-describedby="change-help changeDirection-error">
-        <label class="option-row">
-          <input type="radio" id="change-increase" name="changeDirection" value="Increase">
-          <span>Increase <span class="option-suffix" data-suffix></span></span>
-        </label>
-        <label class="option-row">
-          <input type="radio" name="changeDirection" value="Decrease">
-          <span>Decrease <span class="option-suffix" data-suffix></span></span>
-        </label>
-      </div>
-      <p class="error-msg" id="changeDirection-error" hidden></p>
-    </div>
-
-    <div class="field" data-field="hoursChange">
-      <label class="field-header" for="hours-change">
-        <span class="field-label normal">Hours Change *</span>
-        <span class="field-hint red">*Difference in hours&nbsp; - if contract is going from 87 hrs a week to 83, you would input 4 in this field</span>
-      </label>
-      <div class="unit-wrap">
-        <input class="control" type="number" id="hours-change" name="hoursChange" min="0.25" step="0.25" inputmode="decimal" placeholder="Enter decimal..." aria-describedby="hours-readout hoursChange-error">
-        <span class="unit" aria-hidden="true">hrs per week</span>
-      </div>
-      <p class="date-readout" id="hours-readout" aria-live="polite" hidden></p>
-      <p class="error-msg" id="hoursChange-error" hidden></p>
-    </div>
-  </div>
-
   <!-- Only for "Training hours" -->
   <div id="training-section" hidden>
     <div class="field" data-field="trainingHours">
@@ -782,95 +694,110 @@
 
   <hr class="divider">
 
-  <h2 class="section-title"><span class="section-num">4</span>Billing Information</h2>
+  <h2 class="section-title"><span class="section-num">4</span>Change &amp; Additional Information</h2>
 
-  <div class="field" data-field="billingChange">
-    <div class="field-header" id="billing-change-label">
-      <span class="field-label">Is this an increase or decrease? *</span>
-      <span class="field-help" id="billing-change-help">
-        Select whether the requested change increases or decreases the employee's hours/requirement.
+  <!-- Change in hours: decides whether billing questions are needed -->
+  <div class="field" data-field="hoursDirection">
+    <div class="field-header" id="hours-direction-label">
+      <span class="field-label">Change in Hours *</span>
+      <span class="field-help" id="hours-direction-help">
+        <strong>Is there a change in hours?</strong>
+        If you choose Increase or Decrease, you will be asked for billing information.
       </span>
     </div>
-    <div class="option-list" role="radiogroup" aria-labelledby="billing-change-label" aria-describedby="billing-change-help billing-lock-note billingChange-error">
+    <div class="option-list" role="radiogroup" aria-labelledby="hours-direction-label" aria-describedby="hours-direction-help hours-lock-note hoursDirection-error">
       <label class="option-row">
-        <input type="radio" id="billing-increase" name="billingChange" value="Increase">
+        <input type="radio" id="hours-nochange" name="hoursDirection" value="No change">
+        <span>No change in hours</span>
+      </label>
+      <label class="option-row">
+        <input type="radio" name="hoursDirection" value="Increase">
         <span>Increase</span>
       </label>
       <label class="option-row">
-        <input type="radio" name="billingChange" value="Decrease">
+        <input type="radio" name="hoursDirection" value="Decrease">
         <span>Decrease</span>
       </label>
-      <label class="option-row">
-        <input type="radio" name="billingChange" value="No change">
-        <span>No change <span class="option-suffix">(Employee/Shift Change only)</span></span>
+    </div>
+    <div class="notice info" id="hours-lock-note" hidden>
+      <span class="notice-title" id="hours-lock-title"></span>
+      <p id="hours-lock-text"></p>
+    </div>
+    <p class="error-msg" id="hoursDirection-error" hidden></p>
+
+    <!-- Only for an "Hours Change" that increases or decreases hours -->
+    <div class="sub-control" data-field="hoursChange" id="hours-amount" hidden>
+      <label class="sub-label" for="hours-change">Hours Change *
+        <span class="field-hint red">*Difference in hours&nbsp; - if contract is going from 87 hrs a week to 83, you would input 4 in this field</span>
       </label>
-    </div>
-    <div class="notice info" id="billing-lock-note" hidden>
-      <span class="notice-title" id="billing-lock-title">Set automatically</span>
-      <p id="billing-lock-text"></p>
-    </div>
-    <p class="error-msg" id="billingChange-error" hidden></p>
-  </div>
-
-  <div class="field" data-field="requesterName">
-    <div class="field-header">
-      <span class="field-label">Client requesting the change *</span>
-      <span class="field-help" id="requesting-help">Enter the name and email of the client contact who requested this change.</span>
-    </div>
-    <label class="sub-label" for="requester-name">Name *</label>
-    <input class="control" type="text" id="requester-name" name="requesterName" placeholder="Enter text..." autocomplete="off" aria-describedby="requesting-help requesterName-error">
-    <p class="error-msg" id="requesterName-error" hidden></p>
-    <div class="sub-control" data-field="requesterEmail">
-      <label class="sub-label" for="requester-email">Email *</label>
-      <input class="control" type="email" id="requester-email" name="requesterEmail" placeholder="e.g. name@company.com" autocomplete="off" inputmode="email" aria-describedby="requesterEmail-error">
-      <p class="error-msg" id="requesterEmail-error" hidden></p>
+      <div class="unit-wrap">
+        <input class="control" type="number" id="hours-change" name="hoursChange" min="0.25" step="0.25" inputmode="decimal" placeholder="Enter decimal..." disabled aria-describedby="hours-readout hoursChange-error">
+        <span class="unit" aria-hidden="true">hrs per week</span>
+      </div>
+      <p class="date-readout" id="hours-readout" aria-live="polite" hidden></p>
+      <p class="error-msg" id="hoursChange-error" hidden></p>
     </div>
   </div>
-
-  <div class="field" data-field="poNeeded">
-    <div class="field-header" id="po-label">
-      <span class="field-label">Is a purchase order (PO) needed? *</span>
-    </div>
-    <div class="option-list" role="radiogroup" aria-labelledby="po-label" aria-describedby="poNeeded-error">
-      <label class="option-row">
-        <input type="radio" id="po-yes" name="poNeeded" value="Yes">
-        <span>Yes</span>
-      </label>
-      <label class="option-row">
-        <input type="radio" name="poNeeded" value="No">
-        <span>No</span>
-      </label>
-    </div>
-    <div class="sub-control" id="po-number-wrap" hidden>
-      <label class="sub-label" for="po-number">PO number <span class="option-suffix">(optional, leave blank if not received yet)</span></label>
-      <input class="control" type="text" id="po-number" name="poNumber" placeholder="Enter text..." autocomplete="off" disabled>
-    </div>
-    <p class="error-msg" id="poNeeded-error" hidden></p>
-  </div>
-
-  <div class="field" data-field="billingNote">
-    <label class="field-header" for="billing-note">
-      <span class="field-label">Billing Note *</span>
-      <span class="field-help" id="billing-note-help">
-        <strong>Why is this change being made?</strong>
-        Explain the reason and anything billing needs to know. Increase/decrease, the requesting client and PO are recorded above.
-      </span>
-    </label>
-    <textarea class="control" id="billing-note" name="billingNote" placeholder="Enter text..." aria-describedby="billing-note-help billingNote-error"></textarea>
-    <p class="error-msg" id="billingNote-error" hidden></p>
-  </div>
-
-  <p class="subsection-title">Other information</p>
 
   <div class="field">
     <label class="field-header" for="additional-details">
       <span class="field-label">Additional Details</span>
-      <span class="field-help" id="additional-help">
-        Add any additional information relevant to this requirement.
-        Employee, shift times, days, dates, increase/decrease and client already have their own fields above.
-      </span>
+      <span class="field-help" id="additional-help">Add any additional information relevant to this requirement.</span>
     </label>
     <textarea class="control" id="additional-details" name="additionalDetails" placeholder="Enter text..." aria-describedby="additional-help"></textarea>
+  </div>
+
+  <!-- Billing: only shown when hours increase or decrease -->
+  <div id="billing-section" hidden>
+    <hr class="divider">
+
+    <h2 class="section-title"><span class="section-num">5</span>Billing Information</h2>
+    <p class="section-intro" id="billing-intro"></p>
+
+    <div class="field" data-field="requesterName">
+      <div class="field-header">
+        <span class="field-label">Client requesting the change *</span>
+        <span class="field-help" id="requesting-help">Enter the name and email of the client contact who requested this change.</span>
+      </div>
+      <label class="sub-label" for="requester-name">Name *</label>
+      <input class="control" type="text" id="requester-name" name="requesterName" placeholder="Enter text..." autocomplete="off" aria-describedby="requesting-help requesterName-error">
+      <p class="error-msg" id="requesterName-error" hidden></p>
+      <div class="sub-control" data-field="requesterEmail">
+        <label class="sub-label" for="requester-email">Email *</label>
+        <input class="control" type="email" id="requester-email" name="requesterEmail" placeholder="e.g. name@company.com" autocomplete="off" inputmode="email" aria-describedby="requesterEmail-error">
+        <p class="error-msg" id="requesterEmail-error" hidden></p>
+      </div>
+    </div>
+
+    <div class="field" data-field="poNeeded">
+      <div class="field-header" id="po-label">
+        <span class="field-label">Is a purchase order (PO) needed? *</span>
+      </div>
+      <div class="option-list" role="radiogroup" aria-labelledby="po-label" aria-describedby="poNeeded-error">
+        <label class="option-row">
+          <input type="radio" id="po-yes" name="poNeeded" value="Yes">
+          <span>Yes</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="poNeeded" value="No">
+          <span>No</span>
+        </label>
+      </div>
+      <div class="sub-control" id="po-number-wrap" hidden>
+        <label class="sub-label" for="po-number">PO number <span class="option-suffix">(optional, leave blank if not received yet)</span></label>
+        <input class="control" type="text" id="po-number" name="poNumber" placeholder="Enter text..." autocomplete="off" disabled>
+      </div>
+      <p class="error-msg" id="poNeeded-error" hidden></p>
+    </div>
+
+    <div class="field" data-field="billingNote">
+      <label class="field-header" for="billing-note">
+        <span class="field-label">Billing Note *</span>
+        <span class="field-help" id="billing-note-help">Enter the relevant information explaining the billing change.</span>
+      </label>
+      <textarea class="control" id="billing-note" name="billingNote" placeholder="Enter text..." aria-describedby="billing-note-help billingNote-error"></textarea>
+      <p class="error-msg" id="billingNote-error" hidden></p>
+    </div>
   </div>
 
   <div class="actions">
@@ -989,7 +916,6 @@
       if (phone.replace(/\D/g, '').length < 7) return 'This phone number looks too short. Enter the full number, including area code.';
       return '';
     },
-    daysOfWeek: () => selectedDays().length ? '' : 'Please select at least one day of the week.',
     duration: () => duration() ? '' : 'Select whether the requirement is temporary or permanent.',
     startDate: () => {
       if (!startInput.value) return 'Select the date the requirement starts.';
@@ -1012,13 +938,6 @@
       return '';
     },
     requirementType: () => $('requirement-type').value ? '' : 'Select the type of requirement.',
-    changeDirection: () => {
-      if (reqType() !== TYPE_HOURS) return '';
-      return changeDirection() ? '' : 'Select whether the weekly hours are increasing or decreasing.';
-    },
-    hoursChange: () => reqType() !== TYPE_HOURS ? '' : checkHours($('hours-change'),
-      'Enter the difference in weekly hours, e.g. 4 if the contract goes from 87 to 83 hours.',
-      'Enter the difference as a positive number, e.g. 4. Increase or decrease is set by Type of Change above.'),
     trainingHours: () => reqType() !== TYPE_TRAINING ? '' : checkHours($('training-hours'),
       'Enter the number of training hours to be paid, e.g. 7.5.',
       'Enter the number of training hours as a positive number, e.g. 7.5.'),
@@ -1045,40 +964,23 @@
       }
       return '';
     },
-    billingChange: () => {
-      // Until these are answered, the note in the card explains why; their own fields show the error
-      if (!reqType()) return '';
-      if (reqType() === TYPE_HOURS && !changeDirection()) return '';
-      return radioValue('billingChange') ? '' : 'Please select whether this is an increase or decrease.';
-    },
-    requesterName: () => text('requester-name') ? '' : 'Enter the name of the client contact who requested this change.',
+    hoursDirection: () => hoursDirection() ? '' : 'Select whether there is a change in hours.',
+    hoursChange: () => !hoursAmountNeeded() ? '' : checkHours($('hours-change'),
+      'Enter the difference in weekly hours, e.g. 4 if the contract goes from 87 to 83 hours.',
+      'Enter the difference as a positive number, e.g. 4. Increase or decrease is set by Change in Hours above.'),
+    // Billing questions only apply when hours increase or decrease
+    requesterName: () => !billingNeeded() || text('requester-name') ? ''
+      : 'Enter the name of the client contact who requested this change.',
     requesterEmail: () => {
+      if (!billingNeeded()) return '';
       const email = text('requester-email');
       if (!email) return 'Enter the email address of the client contact who requested this change.';
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Enter a full email address, e.g. name@company.com.';
       return '';
     },
-    poNeeded: () => radioValue('poNeeded') ? '' : 'Select whether a purchase order (PO) is needed.',
-    billingNote: () => text('billing-note') ? '' : 'Enter a billing note explaining why this change is being made.'
+    poNeeded: () => !billingNeeded() || radioValue('poNeeded') ? '' : 'Select whether a purchase order (PO) is needed.',
+    billingNote: () => !billingNeeded() || text('billing-note') ? '' : 'Billing Note is required for changes in hours.'
   };
-
-  const selectedDays = () =>
-    Array.from(form.querySelectorAll('input[name="daysOfWeek"]:checked')).map((box) => box.value);
-
-  // ['Monday','Tuesday','Wednesday','Friday'] -> 'Monday to Wednesday, Friday'
-  function describeDays(days) {
-    const order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const idx = days.map((d) => order.indexOf(d)).sort((a, b) => a - b);
-    const parts = [];
-    for (let i = 0; i < idx.length; i++) {
-      let j = i;
-      while (j + 1 < idx.length && idx[j + 1] === idx[j] + 1) j++;
-      parts.push(j - i >= 2 ? order[idx[i]] + ' to ' + order[idx[j]]
-        : idx.slice(i, j + 1).map((n) => order[n]).join(', '));
-      i = j;
-    }
-    return parts.join(', ');
-  }
 
   function radioValue(name) {
     const checked = form.querySelector('input[name="' + name + '"]:checked');
@@ -1112,10 +1014,10 @@
 
   function reqType() { return $('requirement-type').value; }
 
-  function changeDirection() {
-    const checked = form.querySelector('input[name="changeDirection"]:checked');
-    return checked ? checked.value : '';
-  }
+  // 'No change', 'Increase', 'Decrease' or ''
+  const hoursDirection = () => radioValue('hoursDirection');
+  const billingNeeded = () => hoursDirection() === 'Increase' || hoursDirection() === 'Decrease';
+  const hoursAmountNeeded = () => reqType() === TYPE_HOURS && billingNeeded();
 
   // Shared check for hour amounts: a positive number with at most 2 decimal places
   function checkHours(input, emptyMessage, positiveMessage) {
@@ -1131,10 +1033,9 @@
     site: 'site-search', clientName: 'client-name', branch: 'branch', division: 'division',
     siteAddress: 'site-address', employeeCode: 'employee-code', employeeName: 'employee-name',
     shiftStart: 'shift-start', shiftEnd: 'shift-end', startDate: 'start-date', endDate: 'end-date',
-    requirementType: 'requirement-type', changeDirection: 'change-increase', hoursChange: 'hours-change',
-    trainingHours: 'training-hours', daysOfWeek: 'day-monday', billingNote: 'billing-note', contactName: 'contact-name',
-    contactPhone: 'contact-phone', billingChange: 'billing-increase', requesterName: 'requester-name',
-    requesterEmail: 'requester-email',
+    requirementType: 'requirement-type', hoursDirection: 'hours-nochange', hoursChange: 'hours-change',
+    trainingHours: 'training-hours', billingNote: 'billing-note', contactName: 'contact-name',
+    contactPhone: 'contact-phone', requesterName: 'requester-name', requesterEmail: 'requester-email',
     poNeeded: 'po-yes'
   };
 
@@ -1262,39 +1163,28 @@
 
   function updateType() {
     const type = reqType();
-    [['hours-change-section', TYPE_HOURS, ['changeDirection', 'hoursChange']],
-     ['training-section', TYPE_TRAINING, ['trainingHours']]].forEach(([id, forType, keys]) => {
-      const show = type === forType;
-      const section = $(id);
-      section.hidden = !show;
-      section.querySelectorAll('input').forEach((input) => { input.disabled = !show; });
-      if (!show) keys.forEach((key) => showError(key, ''));
-    });
+    const show = type === TYPE_TRAINING;
+    $('training-section').hidden = !show;
+    $('training-hours').disabled = !show;
+    if (!show) showError('trainingHours', '');
   }
 
-  // Temp/Perm for an hours change comes from "Requirement duration", so the two can never disagree
+  // e.g. "Increase Temp": Temp/Perm comes from "Requirement duration", so the two can never disagree
   function changeLabel() {
     const dur = duration();
-    const dir = changeDirection();
-    return dir && dur ? dir + ' ' + (dur === 'Temporary' ? 'Temp' : 'Perm') : '';
+    const dir = hoursDirection();
+    return billingNeeded() && dur ? dir + ' ' + (dur === 'Temporary' ? 'Temp' : 'Perm') : '';
   }
 
   function updateHoursSummary() {
-    const dur = duration();
-    $('change-duration-text').textContent = dur
-      ? ' (currently ' + dur + ')'
-      : '. Choose Temporary or Permanent there first';
-    form.querySelectorAll('[data-suffix]').forEach((el) => {
-      el.textContent = dur ? (dur === 'Temporary' ? 'Temp' : 'Perm') : '';
-    });
-
     // Plain-English readback so a wrong number or direction stands out
     const readout = $('hours-readout');
     const hours = Number($('hours-change').value);
-    const dir = changeDirection();
-    const ok = dir && hours > 0 && !checkHours($('hours-change'), 'x', 'x');
+    const dir = hoursDirection();
+    const ok = hoursAmountNeeded() && hours > 0 && !checkHours($('hours-change'), 'x', 'x');
     readout.hidden = !ok;
     if (!ok) return;
+    const dur = duration();
     const start = parseDate(startInput.value);
     const end = parseDate(endInput.value);
     let when = '';
@@ -1307,10 +1197,6 @@
   $('requirement-type').addEventListener('change', updateType);
   form.addEventListener('input', updateHoursSummary);
   form.addEventListener('change', updateHoursSummary);
-
-  form.querySelectorAll('input[name="changeDirection"]').forEach((radio) => {
-    radio.addEventListener('change', () => { touched.add('changeDirection'); validate('changeDirection'); });
-  });
 
   /* ---------- employee: lookup or manual entry, or "not yet assigned" ---------- */
 
@@ -1394,47 +1280,68 @@
 
   $('overnight-confirm').addEventListener('change', () => validate('shiftEnd', { force: true }));
 
-  /* ---------- billing: increase/decrease kept consistent with the requirement type ---------- */
+  /* ---------- change in hours: kept consistent with the type, and decides if billing is asked ---------- */
 
-  let billingMode = null;
+  const BILLING_KEYS = ['requesterName', 'requesterEmail', 'poNeeded', 'billingNote'];
+  let hoursMode = null;
 
-  function updateBilling() {
-    const type = reqType();
-    const radios = Array.from(form.querySelectorAll('input[name="billingChange"]'));
-    const set = (value) => radios.forEach((r) => { r.checked = r.value === value; });
-    let title = 'Set automatically';
-    let lock = '';
-    let mode = 'free';
-
-    if (!type) {
-      mode = 'none';
-      set('');
-      title = 'Type of requirement needed';
-      lock = 'Select the Type of requirement above first.';
-    } else if (type === TYPE_HOURS) {
-      mode = 'hours';
-      set(changeDirection());
-      lock = changeDirection()
-        ? 'Matches Type of Change above (' + changeDirection() + '). To change it, change Type of Change.'
-        : 'This will be set from Type of Change above once you answer it.';
-    } else if (type === TYPE_EMPLOYEE) {
-      mode = 'employee';
-      set('No change');
-      lock = 'Employee/Shift Change does not change hours, so this is recorded as No change.';
-    } else if (billingMode !== 'free' || radioValue('billingChange') === 'No change') {
-      // Coming from an automatic value: the user must choose explicitly
-      set('');
-    }
-
-    radios.forEach((r) => { r.disabled = mode !== 'free' || r.value === 'No change'; });
-    billingMode = mode;
-    $('billing-lock-note').hidden = !lock;
-    $('billing-lock-title').textContent = title;
-    $('billing-lock-text').textContent = lock;
+  function clearBilling() {
+    ['requester-name', 'requester-email', 'billing-note', 'po-number'].forEach((id) => { $(id).value = ''; });
+    form.querySelectorAll('input[name="poNeeded"]').forEach((r) => { r.checked = false; });
+    BILLING_KEYS.forEach((key) => { touched.delete(key); showError(key, ''); });
   }
 
-  form.querySelectorAll('input[name="billingChange"]').forEach((radio) => {
-    radio.addEventListener('change', () => { touched.add('billingChange'); validate('billingChange'); });
+  function updateHoursDirection() {
+    const type = reqType();
+    const radios = Array.from(form.querySelectorAll('input[name="hoursDirection"]'));
+    const set = (value) => radios.forEach((r) => { r.checked = r.value === value; });
+    let mode = 'free';
+    let title = '';
+    let lock = '';
+
+    if (type === TYPE_EMPLOYEE) {
+      mode = 'employee';
+      set('No change');
+      title = 'Set automatically';
+      lock = 'An Employee/Shift Change does not change hours.';
+    } else if (type === TYPE_HOURS) {
+      mode = 'hours';
+      if (hoursDirection() === 'No change') set('');
+      title = 'Increase or Decrease';
+      lock = 'An Hours Change must increase or decrease the weekly hours.';
+    } else if (hoursMode === 'employee') {
+      // Leaving an automatic "No change": the user must choose explicitly
+      set('');
+    }
+    radios.forEach((r) => {
+      r.disabled = mode === 'employee' || (mode === 'hours' && r.value === 'No change');
+    });
+    hoursMode = mode;
+    $('hours-lock-note').hidden = !lock;
+    $('hours-lock-title').textContent = title;
+    $('hours-lock-text').textContent = lock;
+
+    // Hours amount: only for an Hours Change that goes up or down
+    const showAmount = hoursAmountNeeded();
+    $('hours-amount').hidden = !showAmount;
+    $('hours-change').disabled = !showAmount;
+    if (!showAmount) showError('hoursChange', '');
+
+    // Billing: hidden completely, and emptied, unless hours increase or decrease
+    const section = $('billing-section');
+    const showBilling = billingNeeded();
+    if (!showBilling && !section.hidden) clearBilling();
+    section.hidden = !showBilling;
+    section.querySelectorAll('input, textarea').forEach((el) => {
+      el.disabled = !showBilling || (el.id === 'po-number' && radioValue('poNeeded') !== 'Yes');
+    });
+    if (showBilling) {
+      $('billing-intro').textContent = 'Needed because the hours will ' + hoursDirection().toLowerCase() + '.';
+    }
+  }
+
+  form.querySelectorAll('input[name="hoursDirection"]').forEach((radio) => {
+    radio.addEventListener('change', () => { touched.add('hoursDirection'); validate('hoursDirection'); });
   });
 
   /* ---------- PO: number only asked for when a PO is needed ---------- */
@@ -1451,38 +1358,21 @@
 
   // Anything that can change a derived value re-runs the derived updates
   form.addEventListener('change', () => {
-    updateBilling();
-    if (touched.has('billingChange') || submitAttempted) validate('billingChange');
-  });
-
-  /* ---------- days of the week: readable summary of the selection ---------- */
-
-  function updateDays() {
-    const days = selectedDays();
-    const readout = $('days-readout');
-    readout.hidden = !days.length;
-    readout.textContent = describeDays(days);
-    const span = document.createElement('span');
-    span.className = 'extra';
-    span.textContent = ' · ' + plural(days.length, 'day') + ' a week';
-    readout.appendChild(span);
-  }
-
-  form.querySelectorAll('input[name="daysOfWeek"]').forEach((box) => {
-    box.addEventListener('change', () => { touched.add('daysOfWeek'); updateDays(); validate('daysOfWeek'); });
+    updateHoursDirection();
+    updateHoursSummary();
+    if (touched.has('hoursDirection') || submitAttempted) validate('hoursDirection');
   });
 
   function refreshAll() {
-    updateDays();
     updateStart();
     updateEndReadout();
     updateDuration();
     updateType();
-    updateHoursSummary();
     updateEmployee();
     updateShift();
-    updateBilling();
+    updateHoursDirection();
     updatePo();
+    updateHoursSummary();
   }
 
   /* ---------- generic fields: validate on blur, clear errors as soon as they're fixed ---------- */
@@ -1533,10 +1423,10 @@
       duration: duration(),
       endDate: temporary ? endInput.value : null,
       requirementType: reqType(),
-      typeOfChange: reqType() === TYPE_HOURS ? changeLabel() : null,
-      hoursChange: reqType() === TYPE_HOURS ? Number($('hours-change').value) : null,
       trainingHours: reqType() === TYPE_TRAINING ? Number($('training-hours').value) : null,
-      daysOfWeek: selectedDays(),
+      changeInHours: hoursDirection(),
+      typeOfChange: changeLabel() || null,
+      hoursChange: hoursAmountNeeded() ? Number($('hours-change').value) : null,
       additionalDetails: text('additional-details'),
       siteContact: { name: text('contact-name'), phone: text('contact-phone') },
       employee: unassigned()
@@ -1546,8 +1436,8 @@
         const info = shiftInfo();
         return { startTime: info.start, endTime: info.end, overnight: info.overnight, lengthMinutes: info.length };
       })(),
-      billing: {
-        changeType: radioValue('billingChange'),
+      // No billing data at all unless hours increase or decrease
+      billing: !billingNeeded() ? null : {
         requestedBy: { name: text('requester-name'), email: text('requester-email') },
         poRequired: radioValue('poNeeded') === 'Yes',
         poNumber: radioValue('poNeeded') === 'Yes' ? text('po-number') || null : null,
@@ -1591,7 +1481,6 @@
     };
 
     group('Requirement');
-    addRow(tbody, 'Days of the Week', describeDays(data.daysOfWeek) + ' (' + plural(data.daysOfWeek.length, 'day') + ')', { key: true });
     const start = parseDate(data.startDate);
     addRow(tbody, 'Start Date', formatShort(start), {
       key: true,
@@ -1600,11 +1489,6 @@
     addRow(tbody, 'Duration', data.duration, { key: true });
     addRow(tbody, 'End Date', data.endDate ? formatShort(parseDate(data.endDate)) : 'No end date', { key: true });
     addRow(tbody, 'Type of requirement', data.requirementType);
-    if (data.typeOfChange) {
-      addRow(tbody, 'Type of Change', data.typeOfChange, { key: true });
-      addRow(tbody, 'Hours Change', (data.typeOfChange.startsWith('Increase') ? '+' : '−') +
-        plural(data.hoursChange, 'hr') + ' per week', { key: true });
-    }
     if (data.trainingHours !== null) addRow(tbody, 'Training Hours', plural(data.trainingHours, 'hr'), { key: true });
 
     group('Employee');
@@ -1621,15 +1505,24 @@
     });
     addRow(tbody, 'Shift length', formatLength(data.shift.lengthMinutes));
 
-    group('Billing');
-    addRow(tbody, 'Increase / Decrease', data.billing.changeType, { key: true });
-    addRow(tbody, 'Client requesting the change',
-      data.billing.requestedBy.name + ', ' + data.billing.requestedBy.email, { key: true });
-    addRow(tbody, 'PO needed', data.billing.poRequired
-      ? 'Yes' + (data.billing.poNumber ? ', PO number ' + data.billing.poNumber : ', PO number not received yet')
-      : 'No');
-    addRow(tbody, 'Billing Note', data.billing.note, { key: true });
+    group('Change & Additional Information');
+    addRow(tbody, 'Change in Hours', data.changeInHours === 'No change' ? 'No change in hours'
+      : data.changeInHours + ' (' + data.duration.toLowerCase() + ')', { key: true });
+    if (data.hoursChange !== null) {
+      addRow(tbody, 'Hours Change', (data.changeInHours === 'Increase' ? '+' : '−') +
+        plural(data.hoursChange, 'hr') + ' per week', { key: true });
+    }
     addRow(tbody, 'Additional Details', data.additionalDetails || 'None');
+
+    if (data.billing) {
+      group('Billing');
+      addRow(tbody, 'Client requesting the change',
+        data.billing.requestedBy.name + ', ' + data.billing.requestedBy.email, { key: true });
+      addRow(tbody, 'PO needed', data.billing.poRequired
+        ? 'Yes' + (data.billing.poNumber ? ', PO number ' + data.billing.poNumber : ', PO number not received yet')
+        : 'No');
+      addRow(tbody, 'Billing Note', data.billing.note, { key: true });
+    }
 
     group('Site');
     addRow(tbody, 'Site', data.siteName);
@@ -1668,7 +1561,7 @@
     submitAttempted = false;
     Object.keys(rules).forEach((key) => showError(key, ''));
     $('summary-error').hidden = true;
-    billingMode = null;
+    hoursMode = null;
     refreshAll();
     switchTo('form');
   });
