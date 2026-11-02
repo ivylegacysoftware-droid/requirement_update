@@ -325,6 +325,61 @@
   .time-grid { display: grid; grid-template-columns: 1fr 1fr; }
   .time-grid > div + div { border-left: 2px solid var(--grey); }
 
+  /* Shift rows */
+  .shift-row { border-bottom: 2px solid var(--grey); }
+  .shift-row-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px 0;
+  }
+  .shift-title { font-size: 15px; font-weight: 700; color: var(--label); }
+  .shift-remove {
+    padding: 4px 8px;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 14px;
+    color: var(--error);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .shift-remove[hidden] { display: none; }
+  .day-picker { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px 4px; }
+  .day-pill { position: relative; cursor: pointer; }
+  .day-pill input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .day-pill span {
+    display: inline-block;
+    min-width: 54px;
+    padding: 7px 10px;
+    border: 2px solid #d6d6d6;
+    border-radius: 18px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    user-select: none;
+  }
+  .day-pill input:checked + span { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .day-pill input:checked + span::before { content: "\2713\00a0"; }
+  .day-pill input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .shift-row .time-grid { border-top: 0; }
+  .shift-footer { padding: 12px; }
+  .shift-footer .date-readout { padding: 10px 0 0; }
+  .btn-add {
+    padding: 8px 14px;
+    border: 2px dashed var(--border-strong);
+    border-radius: 5px;
+    background: #fff;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--label);
+    cursor: pointer;
+  }
+  .btn-add:hover { border-style: solid; }
+  .btn-add:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
   .option-row:has(input:disabled) { cursor: not-allowed; }
   .option-row:has(input:disabled:not(:checked)) { opacity: 0.45; }
 
@@ -659,38 +714,62 @@
     </div>
   </div>
 
-  <!-- Shift: start and end time -->
-  <div class="field" data-field="shift">
+  <!-- Shifts: one row per shift pattern (days + start/end time) -->
+  <div class="field" data-field="shifts">
     <div class="field-header">
-      <span class="field-label">Shift *</span>
+      <span class="field-label">Shifts *</span>
       <span class="field-help" id="shift-help">
-        <strong>When does the shift start and finish?</strong>
-        Select both times (24-hour clock). Overnight shifts that finish after midnight are allowed.
+        <strong>When will the employee work?</strong>
+        Pick the days and the start and end time (24-hour clock). If the times are different on some days,
+        use <strong>Add another shift</strong>. Overnight shifts that finish after midnight are allowed.
       </span>
       <span class="field-hint red">Confirm the shifts are not overlapping on TG.</span>
     </div>
-    <div class="time-grid">
-      <div data-field="shiftStart">
-        <label class="sub-label" for="shift-start">Start time *</label>
-        <input class="control" type="time" id="shift-start" name="shiftStart" step="300" aria-describedby="shift-help shiftStart-error">
-        <p class="error-msg" id="shiftStart-error" hidden></p>
-      </div>
-      <div data-field="shiftEnd">
-        <label class="sub-label" for="shift-end">End time *</label>
-        <input class="control" type="time" id="shift-end" name="shiftEnd" step="300" aria-describedby="shift-help shift-readout shiftEnd-error">
-        <p class="error-msg" id="shiftEnd-error" hidden></p>
-      </div>
+    <div id="shift-list"></div>
+    <div class="shift-footer">
+      <button type="button" class="btn-add" id="add-shift">+ Add another shift</button>
+      <p class="date-readout" id="week-readout" aria-live="polite" hidden></p>
     </div>
-    <p class="date-readout" id="shift-readout" aria-live="polite" hidden></p>
-    <div class="notice" id="overnight-warning" role="alert" hidden>
-      <span class="notice-title">Overnight shift</span>
-      <p id="overnight-text"></p>
-      <label class="confirm-check">
-        <input type="checkbox" id="overnight-confirm">
-        <span>Yes, this shift runs past midnight and finishes the next day.</span>
-      </label>
-    </div>
+    <p class="error-msg" id="shifts-error" hidden></p>
   </div>
+
+  <template id="shift-template">
+    <div class="shift-row">
+      <div class="shift-row-head">
+        <span class="shift-title"></span>
+        <button type="button" class="shift-remove">Remove</button>
+      </div>
+      <div class="day-picker" role="group">
+        <label class="day-pill"><input type="checkbox" value="Monday"><span>Mon</span></label>
+        <label class="day-pill"><input type="checkbox" value="Tuesday"><span>Tue</span></label>
+        <label class="day-pill"><input type="checkbox" value="Wednesday"><span>Wed</span></label>
+        <label class="day-pill"><input type="checkbox" value="Thursday"><span>Thu</span></label>
+        <label class="day-pill"><input type="checkbox" value="Friday"><span>Fri</span></label>
+        <label class="day-pill"><input type="checkbox" value="Saturday"><span>Sat</span></label>
+        <label class="day-pill"><input type="checkbox" value="Sunday"><span>Sun</span></label>
+      </div>
+      <div class="time-grid">
+        <div>
+          <label class="sub-label" data-for="start">Start time *</label>
+          <input class="control shift-start" type="time" step="300">
+        </div>
+        <div>
+          <label class="sub-label" data-for="end">End time *</label>
+          <input class="control shift-end" type="time" step="300">
+        </div>
+      </div>
+      <p class="date-readout shift-readout" hidden></p>
+      <div class="notice shift-overnight" hidden>
+        <span class="notice-title">Overnight shift</span>
+        <p class="shift-overnight-text"></p>
+        <label class="confirm-check">
+          <input type="checkbox" class="shift-overnight-confirm">
+          <span>Yes, this shift runs past midnight and finishes the next day.</span>
+        </label>
+      </div>
+      <p class="error-msg shift-error" hidden></p>
+    </div>
+  </template>
 
   <hr class="divider">
 
@@ -952,17 +1031,9 @@
       return '';
     },
     employeeName: () => unassigned() || text('employee-name') ? '' : 'Employee Name is required.',
-    shiftStart: () => $('shift-start').value ? '' : 'Shift start time is required.',
-    shiftEnd: () => {
-      const start = toMinutes($('shift-start').value);
-      const end = toMinutes($('shift-end').value);
-      if (end === null) return 'Shift end time is required.';
-      if (start === null) return '';
-      if (end === start) return 'End time must be different from the start time.';
-      if (end < start && !$('overnight-confirm').checked) {
-        return 'End time is earlier than the start time. If the shift runs past midnight, tick the box below to confirm. Otherwise, correct the end time.';
-      }
-      return '';
+    shifts: () => {
+      const problems = shiftProblems();
+      return problems.length ? problems[0].message : '';
     },
     hoursDirection: () => hoursDirection() ? '' : 'Select whether there is a change in hours.',
     hoursChange: () => !hoursAmountNeeded() ? '' : checkHours($('hours-change'),
@@ -1003,14 +1074,104 @@
     return [h ? plural(h, 'hr') : '', m ? m + ' mins' : ''].filter(Boolean).join(' ');
   }
 
-  function shiftInfo() {
-    const startValue = $('shift-start').value.slice(0, 5);
-    const endValue = $('shift-end').value.slice(0, 5);
+  /* ---------- shifts: each row is a set of days with one start and end time ---------- */
+
+  const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const shiftRows = () => Array.from($('shift-list').querySelectorAll('.shift-row'));
+
+  function shiftData(row) {
+    const startValue = row.querySelector('.shift-start').value.slice(0, 5);
+    const endValue = row.querySelector('.shift-end').value.slice(0, 5);
     const start = toMinutes(startValue);
     const end = toMinutes(endValue);
-    if (start === null || end === null || start === end) return null;
-    return { start: startValue, end: endValue, overnight: end < start, length: (end - start + 1440) % 1440 };
+    const valid = start !== null && end !== null && start !== end;
+    return {
+      row,
+      days: Array.from(row.querySelectorAll('.day-pill input:checked')).map((box) => box.value),
+      start: startValue,
+      end: endValue,
+      valid,
+      overnight: valid && end < start,
+      length: valid ? (end - start + 1440) % 1440 : 0,
+      confirmed: row.querySelector('.shift-overnight-confirm').checked
+    };
   }
+
+  // ['Monday','Tuesday','Wednesday','Friday'] -> 'Monday to Wednesday, Friday'
+  function describeDays(days) {
+    const idx = days.map((d) => DAYS.indexOf(d)).sort((a, b) => a - b);
+    const parts = [];
+    for (let i = 0; i < idx.length; i++) {
+      let j = i;
+      while (j + 1 < idx.length && idx[j + 1] === idx[j] + 1) j++;
+      parts.push(j - i >= 2 ? DAYS[idx[i]] + ' to ' + DAYS[idx[j]]
+        : idx.slice(i, j + 1).map((n) => DAYS[n]).join(', '));
+      i = j;
+    }
+    return parts.join(', ');
+  }
+
+  const shiftLabel = (s) => s.start + ' to ' + s.end + (s.overnight ? ' (next day)' : '');
+
+  // Every problem with the shifts, in screen order. Each says where to put the focus.
+  function shiftProblems() {
+    const shifts = shiftRows().map(shiftData);
+    const problems = [];
+    shifts.forEach((s) => {
+      const startInput = s.row.querySelector('.shift-start');
+      const endInput = s.row.querySelector('.shift-end');
+      if (!s.days.length) {
+        problems.push({ row: s.row, focus: s.row.querySelector('.day-pill input'), message: 'Select at least one day for this shift.' });
+      } else if (!s.start) {
+        problems.push({ row: s.row, focus: startInput, message: 'Select a start time for this shift.' });
+      } else if (!s.end) {
+        problems.push({ row: s.row, focus: endInput, message: 'Select an end time for this shift.' });
+      } else if (s.start === s.end) {
+        problems.push({ row: s.row, focus: endInput, message: 'End time must be different from the start time.' });
+      } else if (s.overnight && !s.confirmed) {
+        problems.push({
+          row: s.row,
+          focus: s.row.querySelector('.shift-overnight-confirm'),
+          message: 'End time is earlier than the start time. If the shift runs past midnight, tick the box above to confirm. Otherwise, correct the end time.'
+        });
+      }
+    });
+
+    // Overlaps between shifts, including overnight shifts running into the next day (and Sunday into Monday)
+    const WEEK = 7 * 1440;
+    const spans = [];
+    shifts.forEach((s, i) => {
+      if (!s.valid) return;
+      s.days.forEach((day) => {
+        const from = DAYS.indexOf(day) * 1440 + toMinutes(s.start);
+        spans.push({ i, day, from, to: from + s.length });
+      });
+    });
+    for (let x = 0; x < spans.length && problems.every((p) => p.row); x++) {
+      for (let y = x + 1; y < spans.length; y++) {
+        const a = spans[x];
+        const b = spans[y];
+        if (a.i === b.i) continue;
+        if ([-WEEK, 0, WEEK].some((k) => a.from < b.to + k && b.from + k < a.to)) {
+          const first = shifts[Math.min(a.i, b.i)];
+          const second = shifts[Math.max(a.i, b.i)];
+          const firstDay = a.i < b.i ? a.day : b.day;
+          const secondDay = a.i < b.i ? b.day : a.day;
+          problems.push({
+            row: null,
+            focus: second.row.querySelector('.shift-start'),
+            message: 'Shift ' + (Math.min(a.i, b.i) + 1) + ' (' + firstDay + ' ' + shiftLabel(first) + ') overlaps with Shift ' +
+              (Math.max(a.i, b.i) + 1) + ' (' + secondDay + ' ' + shiftLabel(second) + '). Change the days or times so they do not overlap.'
+          });
+          break;
+        }
+      }
+    }
+    return problems;
+  }
+
+  const weeklyMinutes = () => shiftRows().map(shiftData)
+    .reduce((total, s) => total + (s.valid ? s.length * s.days.length : 0), 0);
 
   function reqType() { return $('requirement-type').value; }
 
@@ -1032,7 +1193,7 @@
   const focusTarget = {
     site: 'site-search', clientName: 'client-name', branch: 'branch', division: 'division',
     siteAddress: 'site-address', employeeCode: 'employee-code', employeeName: 'employee-name',
-    shiftStart: 'shift-start', shiftEnd: 'shift-end', startDate: 'start-date', endDate: 'end-date',
+    startDate: 'start-date', endDate: 'end-date',
     requirementType: 'requirement-type', hoursDirection: 'hours-nochange', hoursChange: 'hours-change',
     trainingHours: 'training-hours', billingNote: 'billing-note', contactName: 'contact-name',
     contactPhone: 'contact-phone', requesterName: 'requester-name', requesterEmail: 'requester-email',
@@ -1043,6 +1204,10 @@
   let submitAttempted = false;
 
   function showError(key, message) {
+    if (key === 'shifts') {
+      showShiftErrors(!!message);
+      return;
+    }
     const el = $(key + '-error');
     const container = form.querySelector('[data-field="' + key + '"]');
     const card = container.closest('.field');
@@ -1057,7 +1222,8 @@
 
   function validate(key, { force = false } = {}) {
     const message = rules[key]();
-    if (force || touched.has(key) || submitAttempted) showError(key, message);
+    if (key === 'shifts') showShiftErrors(force || submitAttempted);
+    else if (force || touched.has(key) || submitAttempted) showError(key, message);
     if (submitAttempted) updateSummary();
     return message;
   }
@@ -1240,45 +1406,135 @@
     validate('employeeName');
   });
 
-  /* ---------- shift times: length readout + overnight confirmation ---------- */
+  /* ---------- shift rows: add / remove, readouts, overnight confirmation, errors ---------- */
 
-  function updateShift() {
-    const info = shiftInfo();
-    const readout = $('shift-readout');
-    readout.hidden = !info;
-    $('overnight-warning').hidden = !(info && info.overnight);
-    if (!info) return;
-    readout.textContent = info.start + ' to ' + info.end + (info.overnight ? ' (next day)' : '');
-    const span = document.createElement('span');
-    span.className = 'extra';
-    span.textContent = ' · ' + formatLength(info.length) + ' shift';
-    readout.appendChild(span);
-    if (info.overnight) {
-      $('overnight-text').textContent = 'This shift starts at ' + info.start + ' and finishes at ' + info.end +
-        ' the next day. Please confirm this is correct.';
+  let shiftCounter = 0;
+
+  function addShift() {
+    const id = ++shiftCounter;
+    const row = $('shift-template').content.firstElementChild.cloneNode(true);
+    const start = row.querySelector('.shift-start');
+    const end = row.querySelector('.shift-end');
+    const error = row.querySelector('.shift-error');
+    start.id = 'shift-' + id + '-start';
+    end.id = 'shift-' + id + '-end';
+    error.id = 'shift-' + id + '-error';
+    row.querySelector('[data-for="start"]').htmlFor = start.id;
+    row.querySelector('[data-for="end"]').htmlFor = end.id;
+    [start, end].forEach((input) => input.setAttribute('aria-describedby', 'shift-help ' + error.id));
+    $('shift-list').appendChild(row);
+    renumberShifts();
+    updateShifts();
+    return row;
+  }
+
+  function renumberShifts() {
+    const rows = shiftRows();
+    rows.forEach((row, n) => {
+      const label = 'Shift ' + (n + 1);
+      row.querySelector('.shift-title').textContent = label;
+      row.querySelector('.day-picker').setAttribute('aria-label', 'Days for ' + label.toLowerCase());
+      const remove = row.querySelector('.shift-remove');
+      remove.hidden = rows.length === 1;
+      remove.setAttribute('aria-label', 'Remove ' + label.toLowerCase());
+    });
+  }
+
+  function updateShifts() {
+    shiftRows().forEach((row) => {
+      const s = shiftData(row);
+      const readout = row.querySelector('.shift-readout');
+      const complete = s.valid && s.days.length > 0;
+      readout.hidden = !complete;
+      if (complete) {
+        readout.textContent = describeDays(s.days) + ' · ' + shiftLabel(s);
+        const span = document.createElement('span');
+        span.className = 'extra';
+        span.textContent = ' · ' + formatLength(s.length) + ' per shift';
+        readout.appendChild(span);
+      }
+      row.querySelector('.shift-overnight').hidden = !s.overnight;
+      if (s.overnight) {
+        row.querySelector('.shift-overnight-text').textContent = 'This shift starts at ' + s.start +
+          ' and finishes at ' + s.end + ' the next day. Please confirm this is correct.';
+      }
+    });
+
+    const total = weeklyMinutes();
+    const week = $('week-readout');
+    week.hidden = !total;
+    if (total) {
+      const rows = shiftRows().length;
+      week.textContent = 'Total: ' + formatLength(total) + ' a week';
+      const span = document.createElement('span');
+      span.className = 'extra';
+      span.textContent = ' · across ' + plural(rows, 'shift');
+      week.appendChild(span);
     }
   }
 
-  ['shift-start', 'shift-end'].forEach((id) => {
-    const onChange = () => {
-      // New times need a fresh overnight confirmation
-      $('overnight-confirm').checked = false;
-      updateShift();
-      validate('shiftStart');
-      validate('shiftEnd');
-    };
-    $(id).addEventListener('input', onChange);
-    $(id).addEventListener('change', () => {
-      touched.add(id === 'shift-start' ? 'shiftStart' : 'shiftEnd');
-      onChange();
+  // Row errors appear once a row has been worked on (or on submit); overlaps appear as soon as they exist
+  function showShiftErrors(all) {
+    const problems = shiftProblems();
+    shiftRows().forEach((row) => {
+      const problem = problems.find((p) => p.row === row);
+      const visible = !!problem && (all || row.dataset.touched === 'true');
+      const el = row.querySelector('.shift-error');
+      el.textContent = visible ? problem.message : '';
+      el.hidden = !visible;
+      row.classList.toggle('invalid', visible);
+      row.querySelectorAll('.shift-start, .shift-end').forEach((input) => {
+        input.setAttribute('aria-invalid', visible ? 'true' : 'false');
+      });
     });
-    $(id).addEventListener('blur', () => {
-      touched.add(id === 'shift-start' ? 'shiftStart' : 'shiftEnd');
-      validate(id === 'shift-start' ? 'shiftStart' : 'shiftEnd');
-    });
+    const overlap = problems.find((p) => !p.row);
+    $('shifts-error').textContent = overlap ? overlap.message : '';
+    $('shifts-error').hidden = !overlap;
+    const card = form.querySelector('[data-field="shifts"]');
+    card.classList.toggle('invalid', !!card.querySelector('.error-msg:not([hidden])'));
+  }
+
+  function onShiftEdit(event) {
+    const row = event.target.closest('.shift-row');
+    if (!row) return;
+    // New times need a fresh overnight confirmation
+    if (event.target.matches('.shift-start, .shift-end')) row.querySelector('.shift-overnight-confirm').checked = false;
+    updateShifts();
+    validate('shifts');
+  }
+
+  $('shift-list').addEventListener('input', onShiftEdit);
+  $('shift-list').addEventListener('change', onShiftEdit);
+
+  // Leaving a row counts as having worked on it
+  $('shift-list').addEventListener('focusout', (event) => {
+    const row = event.target.closest('.shift-row');
+    if (row && !row.contains(event.relatedTarget)) {
+      row.dataset.touched = 'true';
+      validate('shifts');
+    }
   });
 
-  $('overnight-confirm').addEventListener('change', () => validate('shiftEnd', { force: true }));
+  $('shift-list').addEventListener('click', (event) => {
+    const remove = event.target.closest('.shift-remove');
+    if (!remove) return;
+    remove.closest('.shift-row').remove();
+    renumberShifts();
+    updateShifts();
+    validate('shifts');
+    $('add-shift').focus();
+  });
+
+  $('add-shift').addEventListener('click', () => {
+    const row = addShift();
+    row.querySelector('.day-pill input').focus();
+    validate('shifts');
+  });
+
+  function resetShifts() {
+    $('shift-list').textContent = '';
+    addShift();
+  }
 
   /* ---------- change in hours: kept consistent with the type, and decides if billing is asked ---------- */
 
@@ -1369,7 +1625,7 @@
     updateDuration();
     updateType();
     updateEmployee();
-    updateShift();
+    updateShifts();
     updateHoursDirection();
     updatePo();
     updateHoursSummary();
@@ -1398,8 +1654,9 @@
     const invalid = Object.keys(rules).filter((key) => validate(key, { force: true }));
 
     if (invalid.length) {
-      const card = form.querySelector('[data-field="' + invalid[0] + '"]');
-      let first = $(focusTarget[invalid[0]]);
+      let card = form.querySelector('[data-field="' + invalid[0] + '"]');
+      let first = invalid[0] === 'shifts' ? shiftProblems()[0].focus : $(focusTarget[invalid[0]]);
+      if (invalid[0] === 'shifts') card = first.closest('.shift-row') || card;
       if (!first || first.disabled) first = card.querySelector('input:not(:disabled), select, textarea') || card;
       card.scrollIntoView({ behavior: 'smooth', block: 'center' });
       if (first.focus) first.focus({ preventScroll: true });
@@ -1432,10 +1689,14 @@
       employee: unassigned()
         ? { assigned: false, code: null, name: null }
         : { assigned: true, code: text('employee-code'), name: text('employee-name') },
-      shift: (() => {
-        const info = shiftInfo();
-        return { startTime: info.start, endTime: info.end, overnight: info.overnight, lengthMinutes: info.length };
-      })(),
+      shifts: shiftRows().map(shiftData).map((s) => ({
+        days: DAYS.filter((day) => s.days.includes(day)),
+        startTime: s.start,
+        endTime: s.end,
+        overnight: s.overnight,
+        lengthMinutes: s.length
+      })),
+      weeklyMinutes: weeklyMinutes(),
       // No billing data at all unless hours increase or decrease
       billing: !billingNeeded() ? null : {
         requestedBy: { name: text('requester-name'), email: text('requester-email') },
@@ -1498,12 +1759,12 @@
     } else {
       addRow(tbody, 'Employee', 'Not yet assigned', { key: true, tag: 'To be confirmed' });
     }
-    addRow(tbody, 'Shift start time', data.shift.startTime, { key: true });
-    addRow(tbody, 'Shift end time', data.shift.endTime + (data.shift.overnight ? ' (next day)' : ''), {
-      key: true,
-      tag: data.shift.overnight ? 'Overnight: confirmed' : ''
+    data.shifts.forEach((s, n) => {
+      addRow(tbody, data.shifts.length === 1 ? 'Shift' : 'Shift ' + (n + 1),
+        describeDays(s.days) + '\n' + shiftLabel({ start: s.startTime, end: s.endTime, overnight: s.overnight }) +
+        ' · ' + formatLength(s.lengthMinutes), { key: true, tag: s.overnight ? 'Overnight: confirmed' : '' });
     });
-    addRow(tbody, 'Shift length', formatLength(data.shift.lengthMinutes));
+    addRow(tbody, 'Total hours per week', formatLength(data.weeklyMinutes), { key: true });
 
     group('Change & Additional Information');
     addRow(tbody, 'Change in Hours', data.changeInHours === 'No change' ? 'No change in hours'
@@ -1559,6 +1820,7 @@
     form.reset();
     touched.clear();
     submitAttempted = false;
+    resetShifts();
     Object.keys(rules).forEach((key) => showError(key, ''));
     $('summary-error').hidden = true;
     hoursMode = null;
@@ -1566,6 +1828,7 @@
     switchTo('form');
   });
 
+  resetShifts();
   // Restore state if the browser pre-filled values (e.g. after Back navigation)
   refreshAll();
 })();
